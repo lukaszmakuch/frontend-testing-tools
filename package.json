@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jest": "^28.1.0"
+    "chromedriver": "^101.0.0",
+    "jest": "^28.1.0",
+    "jest-image-snapshot": "^5.1.0",
+    "selenium-webdriver": "^4.2.0",
+    "wait-for-expect": "^3.0.2"
   }
 }
