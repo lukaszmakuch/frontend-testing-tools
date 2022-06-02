@@ -60,4 +60,6 @@ test("the context in which tests are executed", async () => {
   await c2.setValue("msg", message).printValue("msg");
 
   expect(printed).toEqual(["JOE, hi man!"]);
+
+  expect(new Set([c1, c2])).toEqual(new Set(testCtx.getAllContexts()));
 });

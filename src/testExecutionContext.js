@@ -62,10 +62,15 @@ function makeTestExecutionContext() {
     return contexts[name];
   };
 
+  const getAllContexts = () => {
+    return Object.values(contexts);
+  };
+
   const engine = new Proxy(
     {
       swapModule,
       getContext,
+      getAllContexts,
       [Symbol.iterator]: function* () {
         let index = 0;
         while (true) {

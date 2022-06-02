@@ -1,14 +1,14 @@
 const { makeTestExecutionContext } = require("./testExecutionContext");
-const browserModule = require("./modules/browser");
-// const { jest } = require("@jest/globals");
 
 const NodeEnvironment = require("jest-environment-node").default;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
-    // console.log(config.projectConfig);
+    // console.log(config, context);
 
+    this.global.updatingSnapshots =
+      config.globalConfig.updateSnapshot === "all";
     this.global.testPath = context.testPath;
     // this.docblockPragmas = context.docblockPragmas;
   }
@@ -18,7 +18,6 @@ class CustomEnvironment extends NodeEnvironment {
 
     // console.log(this.context.setTimeout);
     const testCtx = makeTestExecutionContext();
-    testCtx.swapModule("browser", browserModule);
     this.global.testCtx = testCtx;
     // await someSetupTasks(this.testPath);
     // this.global.someGlobalObject = createGlobalObject();
@@ -29,11 +28,17 @@ class CustomEnvironment extends NodeEnvironment {
     // }
   }
 
-  // async teardown() {
-  //   this.global.someGlobalObject = destroyGlobalObject();
-  //   await someTeardownTasks();
-  //   await super.teardown();
-  // }
+  async teardown() {
+    // this.global.someGlobalObject = destroyGlobalObject();
+    // await someTeardownTasks();
+
+    const contexts = this.global.testCtx.getAllContexts();
+
+    for (let i = 0; i < contexts.length; i++) {
+      await contexts[i].teardownExecute();
+    }
+    await super.teardown();
+  }
 
   // getVmContext() {
   //   return super.getVmContext();

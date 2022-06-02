@@ -12,12 +12,9 @@ module.exports = {
       )
       .build();
     this.driver = driver;
-
-    console.log("starting the browser");
+    this.teardownRegister(() => this.browserClose());
   },
   close: async function () {
-    try {
-      await this.driver.quit();
-    } catch {}
+    await this.driver.quit();
   },
 };
