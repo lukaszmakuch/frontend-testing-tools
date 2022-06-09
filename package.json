@@ -11,10 +11,17 @@
   "license": "ISC",
   "dependencies": {
     "chromedriver": "^101.0.0",
+    "endpoint-imposter-utils": "file:/Users/lukasz/projects/endpoint-imposter-utils",
+    "escodegen": "^2.0.0",
+    "glob": "^8.0.3",
     "jest": "^28.1.0",
     "jest-image-snapshot": "^5.1.0",
+    "portastic": "^1.0.1",
     "selenium-webdriver": "^4.2.0",
     "sleep-promise": "^9.1.0",
+    "start-endpoint-imposter": "^0.0.1",
+    "tmp": "^0.2.1",
+    "uuid": "^8.3.2",
     "wait-for-expect": "^3.0.2"
   }
 }

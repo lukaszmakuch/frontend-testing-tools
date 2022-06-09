@@ -11,6 +11,10 @@ module.exports = {
         new chrome.Options().windowSize({ width: 1024, height: 700 })
       )
       .build();
+
+    await driver.sendDevToolsCommand("Emulation.setFocusEmulationEnabled", {
+      enabled: true,
+    });
     this.driver = driver;
     this.teardownRegister(() => this.browserClose());
   },

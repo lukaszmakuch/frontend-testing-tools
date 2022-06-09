@@ -1,20 +1,36 @@
-const waitForExpect = require("wait-for-expect");
-const { toMatchImageSnapshot } = require("./toMatchImageSnapshot");
-const browserModule = require("./modules/browser");
-const screenshotModule = require("./modules/screenshot");
-const setupModule = require("./modules/setup");
-const timeModule = require("./modules/time");
-const teardownModule = require("./modules/teardown");
+const startEndpointImposter = require("start-endpoint-imposter");
+const { unlink, rmdir } = require("node:fs/promises");
+var portastic = require("portastic");
+const { locateMockFiles, createEntryPointFile } = require("./mocks");
+const { getTmpDir } = require("./tmpdir");
 
-waitForExpect.defaults.timeout = 1100;
-waitForExpect.defaults.interval = 10;
+module.exports = async (globalConfig) => {
+  const rootDir = globalConfig.rootDir;
 
-jest.setTimeout(5 * 60 * 1000);
+  const mockFiles = await locateMockFiles({ rootDir });
 
-expect.extend({ toMatchImageSnapshot });
+  const { mocksEntryPointFile } = await createEntryPointFile({
+    rootDir,
+    mockFiles,
+  });
+  const tmpDir = await getTmpDir({ rootDir });
 
-testCtx.swapModule("browser", browserModule);
-testCtx.swapModule("screenshot", screenshotModule);
-testCtx.swapModule("time", timeModule);
-testCtx.swapModule("setup", setupModule);
-testCtx.swapModule("teardown", teardownModule);
+  const [port] = await portastic.find({
+    min: 5000,
+    max: 7999,
+  });
+
+  const stopEI = await startEndpointImposter({
+    "--port": port,
+    "--mocks": mocksEntryPointFile,
+  });
+
+  const stop = async () => {
+    await stopEI();
+    await unlink(mocksEntryPointFile);
+    await rmdir(tmpDir);
+  };
+  global.__ENDPOINT_IMPOSTER_PORT__ = port;
+  global.__ENDPOINT_IMPOSTER_ROOT__ = `http://localhost:${port}`;
+  global.__STOP_ENDPOINT_IMPOSTER__ = stop;
+};
