@@ -8,11 +8,28 @@ const access = util.promisify(fs.access);
 const SLEEP_BEFORE_UPDATING = 2000; // TODO: extract to an ENV variable
 const SLEEP_BEFORE_CHECKING = 500; // TODO: extract to an ENV variable
 
+function getPlatformShortcut() {
+  switch (process.platform) {
+    case "darwin":
+      return "mac";
+    case "linux":
+      return "linux";
+    case "win32":
+      return "win";
+    default:
+      return "unknown";
+  }
+}
+
 module.exports = {
   take: async function (id) {
     const customSnapshotIdentifier = id;
 
-    const directory = path.resolve(path.dirname(testPath), "screenshots");
+    const directory = path.resolve(
+      path.dirname(testPath),
+      "screenshots",
+      await this.screenshotGetDeviceType()
+    );
     const file = path.resolve(
       directory,
       `${customSnapshotIdentifier}-snap.png`
@@ -37,21 +54,28 @@ module.exports = {
     const testFn = async () => {
       const screenshot = await this.driver.takeScreenshot();
       expect(screenshot).toMatchImageSnapshot({
-        // TODO: allow these to be configured
+        failureThreshold: this.configRead().screenshot.failureThreshold,
+        failureThresholdType: this.configRead().screenshot.failureThresholdType,
+
+        // fixed params
         customSnapshotsDir: directory,
-        failureThreshold: 0.0001,
-        failureThresholdType: "percent",
         customSnapshotIdentifier,
       });
     };
 
     if (isUpdating) {
-      console.log("updating snapshot");
       await sleep(SLEEP_BEFORE_UPDATING);
       await testFn();
     } else {
       await sleep(SLEEP_BEFORE_CHECKING);
       await waitForExpect(testFn, timeout, interval);
     }
+  },
+
+  getDeviceType: async function () {
+    if (process.env.SCREENSHOT_DEVICE_TYPE)
+      return process.env.SCREENSHOT_DEVICE_TYPE;
+
+    return getPlatformShortcut() + "_x" + (await this.browserGetPixelRatio());
   },
 };

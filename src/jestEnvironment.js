@@ -4,10 +4,7 @@ const NodeEnvironment = require("jest-environment-node").default;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
-    console.log("creating the env");
     super(config, context);
-    // console.log(config, context);
-
     this.global.updatingSnapshots =
       config.globalConfig.updateSnapshot === "all";
     this.global.testPath = context.testPath;
@@ -16,7 +13,6 @@ class CustomEnvironment extends NodeEnvironment {
   }
 
   async setup() {
-    console.log("env setup");
     await super.setup();
 
     const testCtx = makeTestExecutionContext();

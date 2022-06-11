@@ -11,11 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "chromedriver": "^101.0.0",
-    "endpoint-imposter-utils": "file:/Users/lukasz/projects/endpoint-imposter-utils",
+    "endpoint-imposter-utils": "git@github.com:lukaszmakuch/endpoint-imposter-utils.git",
     "escodegen": "^2.0.0",
     "glob": "^8.0.3",
     "jest": "^28.1.0",
     "jest-image-snapshot": "^5.1.0",
+    "lodash": "^4.17.21",
     "portastic": "^1.0.1",
     "selenium-webdriver": "^4.2.0",
     "sleep-promise": "^9.1.0",

@@ -6,17 +6,13 @@ const toMatchImageSnapshot = function (...args) {
   const customSnapshotIdentifier = args[1].customSnapshotIdentifier;
   const testName = this.currentTestName;
   const uniqScreenshotId = `${testName};${customSnapshotIdentifier}`;
-  // console.log("customSnapshotIdentifier", customSnapshotIdentifier);
 
   if (!this.snapshotState._runningScreenshots)
     this.snapshotState._runningScreenshots = {};
   if (!this.snapshotState._runningScreenshots[uniqScreenshotId])
     this.snapshotState._runningScreenshots[uniqScreenshotId] = false;
 
-  // console.log('here')
-
   const result = baseToMatchImageSnapshot.bind(this)(...args);
-  // console.log("result", result);
 
   const rerun = this.snapshotState._runningScreenshots[uniqScreenshotId];
 
@@ -38,9 +34,6 @@ const toMatchImageSnapshot = function (...args) {
     if (result.pass) this.snapshotState.matched++;
     if (!result.pass) this.snapshotState.unmatched++;
   }
-
-  // console.log("state", this.snapshotState)
-  // console.log("result", result)
 
   this.snapshotState._runningScreenshots[uniqScreenshotId] = true;
   return result;

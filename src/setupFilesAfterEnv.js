@@ -6,13 +6,15 @@ const setupModule = require("./modules/setup");
 const timeModule = require("./modules/time");
 const teardownModule = require("./modules/teardown");
 const makeEIModule = require("./modules/ei");
+const xpathModule = require("./modules/xpath");
+const textModule = require("./modules/text");
+const pauseModule = require("./modules/pause");
+const configModule = require("./modules/config");
 
+// TODO: parametrize these three
 waitForExpect.defaults.timeout = 1100;
 waitForExpect.defaults.interval = 10;
-
 jest.setTimeout(5 * 60 * 1000);
-
-console.log("setup files after env");
 
 expect.extend({ toMatchImageSnapshot });
 
@@ -22,3 +24,7 @@ testCtx.swapModule("time", timeModule);
 testCtx.swapModule("setup", setupModule);
 testCtx.swapModule("teardown", teardownModule);
 testCtx.swapModule("ei", makeEIModule());
+testCtx.swapModule("xpath", xpathModule);
+testCtx.swapModule("text", textModule);
+testCtx.swapModule("pause", pauseModule);
+testCtx.swapModule("config", configModule);
