@@ -20,7 +20,7 @@ window._testSetHttpApiUrl = function (url) {
 window._testContinueRendering = function () {
   root.render(toRender);
 };
-if (!/frontend-testing-utils/.test(navigator.userAgent))
+if (!/frontend-testing-tools/.test(navigator.userAgent))
   window._testContinueRendering();
 
 // If you want to start measuring performance in your app, pass a function

@@ -5,7 +5,7 @@ const defaultConfig = require("./defaultConfig");
 function read() {
   const pacakgeJsonOverrides =
     require(path.resolve(process.cwd(), "package.json"))?.[
-      "frontend-testing-utils"
+      "frontend-testing-tools"
     ] ?? {};
   return merge(defaultConfig, pacakgeJsonOverrides);
 }

@@ -10,7 +10,7 @@ module.exports = {
         width: this.configRead().browser.default.width,
         height: this.configRead().browser.default.height,
       })
-      .addArguments("--user-agent=frontend-testing-utils");
+      .addArguments("--user-agent=frontend-testing-tools");
 
     let driver = new webdriver.Builder()
       .forBrowser("chrome")

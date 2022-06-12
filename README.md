@@ -12,13 +12,13 @@ const { defaults } = require("jest-config");
 module.exports = {
   ...defaults,
   testEnvironment:
-    "../node_modules/frontend-testing-utils/src/jestEnvironment.js",
+    "../node_modules/frontend-testing-tools/src/jestEnvironment.js",
   setupFilesAfterEnv: [
-    "../node_modules/frontend-testing-utils/src/setupFilesAfterEnv.js",
+    "../node_modules/frontend-testing-tools/src/setupFilesAfterEnv.js",
   ],
-  globalSetup: "../node_modules/frontend-testing-utils/src/globalSetup.js",
+  globalSetup: "../node_modules/frontend-testing-tools/src/globalSetup.js",
   globalTeardown:
-    "../node_modules/frontend-testing-utils/src/globalTeardown.js",
+    "../node_modules/frontend-testing-tools/src/globalTeardown.js",
 };
 
 ```
@@ -33,7 +33,7 @@ window._testSetHttpApiUrl = function (url) {
 window._testContinueRendering = function () {
   root.render(toRender);
 };
-if (!/frontend-testing-utils/.test(navigator.userAgent))
+if (!/frontend-testing-tools/.test(navigator.userAgent))
   window._testContinueRendering();
 ```
 
@@ -68,7 +68,7 @@ test(NAME, () =>
 You can specify global options in the package.json file like that:
 
 ```
-"frontend-testing-utils": {
+"frontend-testing-tools": {
   "browser": {
     "default": {
       "width": 1024,
