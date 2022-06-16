@@ -70,52 +70,52 @@ function unserializeTestingLibraryOptions(serializedOptions) {
 }
 
 let testingLibraryModule = {
+  name: "tl",
+
   serializeTextMatch,
   unserializeTextMatch,
 
-  installIfNeeded: async function () {
-    if (this._testingLibraryInstalled) return;
+  methods: {
+    installIfNeeded: async function () {
+      if (this._testingLibraryInstalled) return;
 
-    const testingLibrarySource = await readFile(
-      path.resolve(
-        path.dirname(require.resolve("@testing-library/dom")),
-        "@testing-library/dom.umd.min.js"
-      ),
-      "utf-8"
-    );
+      const testingLibrarySource = await readFile(
+        path.resolve(
+          path.dirname(require.resolve("@testing-library/dom")),
+          "@testing-library/dom.umd.min.js"
+        ),
+        "utf-8"
+      );
 
-    await this.driver.executeScript(
-      `
-      var testingLibraryScriptElement = document.createElement("script");
-      testingLibraryScriptElement.setAttribute("src", URL.createObjectURL(
-        new File(
-          [arguments[0]],
-          "dom-testing-library.js",
-          { type: "text/plain" }
-        )
-      )); 
-      testingLibraryScriptElement.setAttribute("type", "text/javascript"); 
-      document.head.appendChild(testingLibraryScriptElement);
+      await this.driver.executeScript(
+        `
+        var testingLibraryScriptElement = document.createElement("script");
+        testingLibraryScriptElement.setAttribute("src", URL.createObjectURL(
+          new File(
+            [arguments[0]],
+            "dom-testing-library.js",
+            { type: "text/plain" }
+          )
+        )); 
+        testingLibraryScriptElement.setAttribute("type", "text/javascript"); 
+        document.head.appendChild(testingLibraryScriptElement);
+  
+        window.unserializeTextMatch = ${unserializeTextMatch};
+        window.unserializeTestingLibraryOptions = ${unserializeTestingLibraryOptions};
+      `,
+        [testingLibrarySource]
+      );
 
-      window.unserializeTextMatch = ${unserializeTextMatch};
-      window.unserializeTestingLibraryOptions = ${unserializeTestingLibraryOptions};
-    `,
-      [testingLibrarySource]
-    );
+      await waitForExpect(async () => {
+        const notInstalled = await this.driver.executeScript(`
+          return typeof(window.TestingLibraryDom) === "undefined";
+        `);
+        if (notInstalled) throw new Error("Testing Library not installed");
+      });
 
-    await waitForExpect(async () => {
-      const notInstalled = await this.driver.executeScript(`
-        return typeof(window.TestingLibraryDom) === "undefined";
-      `);
-      if (notInstalled) throw new Error("Testing Library not installed");
-    });
-
-    // TODO: include it from some offline source
-
-    this._testingLibraryInstalled = true;
+      this._testingLibraryInstalled = true;
+    },
   },
-
-  // TODO: findByAnyText based on the hierarchy described here https://testing-library.com/docs/queries/about/
 };
 
 // Queries:
@@ -129,7 +129,7 @@ let testingLibraryModule = {
   "findByTitle",
   "findByTestId",
 ].forEach((queryFnName) => {
-  testingLibraryModule[queryFnName] = async function (...args) {
+  testingLibraryModule.methods[queryFnName] = async function (...args) {
     // prettier-ignore
     const [containerName, matcher, options, cb] = cond([
       [
@@ -211,7 +211,7 @@ let testingLibraryModule = {
   const containerSettingFnName = `setContainer${queryFnNamePart}`;
   const queryFnName = `tlFind${queryFnNamePart}`;
 
-  testingLibraryModule[containerSettingFnName] = async function (
+  testingLibraryModule.methods[containerSettingFnName] = async function (
     containerName,
     ...rest
   ) {

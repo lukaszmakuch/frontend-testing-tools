@@ -4,45 +4,57 @@ test("the context in which tests are executed", async () => {
   const testCtx = makeTestExecutionContext();
 
   const valueSetterModule = {
-    value: async function (key, value) {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-      this["_" + key] = value;
-    },
+    name: "set",
+    methods: {
+      value: async function (key, value) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        this["_" + key] = value;
+      },
 
-    upperCasedValue: async function (key, srcKey) {
-      const toTransform = await this.readValue(srcKey);
-      return this.setValue(key, this.uppercaseString(toTransform));
-    },
+      upperCasedValue: async function (key, srcKey) {
+        const toTransform = await this.readValue(srcKey);
+        return this.setValue(key, this.uppercaseString(toTransform));
+      },
 
-    namePrefixedValue: function (key, value) {
-      return this.setValue(key, this.readValue("name") + value);
+      namePrefixedValue: function (key, value) {
+        return this.setValue(key, this.readValue("name") + value);
+      },
     },
   };
 
   const valueReadingModule = {
-    value: function (key) {
-      const value = this["_" + key];
-      return value;
+    name: "read",
+    methods: {
+      value: function (key) {
+        const value = this["_" + key];
+        return value;
+      },
     },
   };
 
   let printed = [];
   const printer = {
-    value: async function (key) {
-      printed.push(this.readValue(key));
+    name: "print",
+    methods: {
+      value: async function (key) {
+        printed.push(this.readValue(key));
+      },
     },
   };
 
   const upperCaseModule = {
-    string: function (string) {
-      return string.toUpperCase();
+    name: "uppercase",
+    methods: {
+      string: function (string) {
+        return string.toUpperCase();
+      },
     },
   };
 
-  testCtx.swapModule("set", valueSetterModule);
-  testCtx.swapModule("read", valueReadingModule);
-  testCtx.swapModule("print", printer);
-  testCtx.swapModule("uppercase", upperCaseModule);
+  testCtx.swapModule(valueSetterModule);
+  testCtx.swapModule(valueReadingModule);
+  testCtx.swapModule(printer);
+  testCtx.swapModule(upperCaseModule);
 
   // const c1 = testCtx[0];
   // const c2 = testCtx[1];

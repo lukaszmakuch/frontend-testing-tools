@@ -5,19 +5,19 @@ test(NAME, () =>
     .eiUse()
     .setupFinish()
 
-    // .tlFindByRole(/b.tton/, { name: /DD/i }, async (button) => {
-    //   console.log(button);
-    // })
-    // .containerSet("form", () => testCtx[0].tlFindByTestId("myForm"))
-    // .tlSetContainerByTestId("form", "myForm")
+    .containerSet("form", () => testCtx[0].tlFindByTestId("myForm"))
+    .tlSetContainerByTestId("form", "myForm")
+    .tlFindByRole("form", /b.tton/, { name: /DD/i }, async (button) => {
+      console.log(button);
+    })
 
-    // .playgroundExec(async function () {
-    //   console.log({
-    //     fetched: await testCtx[0].tlFindByText("form", /a(D{2,3})/i),
-    //     // container: await testCtx[0].containerGet("form"),
-    //   });
-    // })
-    // .screenshotTake("loadingItems")
+    .playgroundExec(async function () {
+      console.log({
+        fetched: await testCtx[0].tlFindByText("form", /a(D{2,3})/i),
+        // container: await testCtx[0].containerGet("form"),
+      });
+    })
+    .screenshotTake("loadingItems")
     // .pauseTest()
     .eiRelease("items")
     .tlSetContainerByTestId("form", "myForm")

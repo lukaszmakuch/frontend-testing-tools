@@ -14,8 +14,8 @@ function makeTestExecutionContext() {
   let modules = {};
   let contexts = {};
 
-  const swapModule = (moduleName, module) => {
-    modules[moduleName] = module;
+  const swapModule = (module) => {
+    modules[module.name] = module;
   };
 
   const createContext = () => {
@@ -32,7 +32,7 @@ function makeTestExecutionContext() {
         const moduleAndMethod = readModuleAndMethod(String(prop));
         if (moduleAndMethod) {
           const maybeRawModuleFn =
-            modules[moduleAndMethod.module]?.[moduleAndMethod.method];
+            modules[moduleAndMethod.module]?.methods?.[moduleAndMethod.method];
 
           if (!maybeRawModuleFn) return;
           return function (...args) {

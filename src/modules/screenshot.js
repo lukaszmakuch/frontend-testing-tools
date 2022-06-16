@@ -22,60 +22,64 @@ function getPlatformShortcut() {
 }
 
 module.exports = {
-  take: async function (id) {
-    const customSnapshotIdentifier = id;
+  name: "screenshot",
+  methods: {
+    take: async function (id) {
+      const customSnapshotIdentifier = id;
 
-    const directory = path.resolve(
-      path.dirname(testPath),
-      "screenshots",
-      await this.screenshotGetDeviceType()
-    );
-    const file = path.resolve(
-      directory,
-      `${customSnapshotIdentifier}-snap.png`
-    );
+      const directory = path.resolve(
+        path.dirname(testPath),
+        "screenshots",
+        await this.screenshotGetDeviceType()
+      );
+      const file = path.resolve(
+        directory,
+        `${customSnapshotIdentifier}-snap.png`
+      );
 
-    // It's true whenever we're forcefully updating existing snapshots,
-    // as indicated by the UPDATING env variable or when this snapshot
-    // hasn't been yet recorded.
+      // It's true whenever we're forcefully updating existing snapshots,
+      // as indicated by the UPDATING env variable or when this snapshot
+      // hasn't been yet recorded.
 
-    let screenshotExists = true;
-    try {
-      await access(file, fs.constants.F_OK);
-    } catch {
-      screenshotExists = false;
-    }
+      let screenshotExists = true;
+      try {
+        await access(file, fs.constants.F_OK);
+      } catch {
+        screenshotExists = false;
+      }
 
-    const isUpdating = updatingSnapshots || !screenshotExists;
+      const isUpdating = updatingSnapshots || !screenshotExists;
 
-    const timeout = 1000;
-    const interval = 500;
+      const timeout = 1000;
+      const interval = 500;
 
-    const testFn = async () => {
-      const screenshot = await this.driver.takeScreenshot();
-      expect(screenshot).toMatchImageSnapshot({
-        failureThreshold: this.configRead().screenshot.failureThreshold,
-        failureThresholdType: this.configRead().screenshot.failureThresholdType,
+      const testFn = async () => {
+        const screenshot = await this.driver.takeScreenshot();
+        expect(screenshot).toMatchImageSnapshot({
+          failureThreshold: this.configRead().screenshot.failureThreshold,
+          failureThresholdType:
+            this.configRead().screenshot.failureThresholdType,
 
-        // fixed params
-        customSnapshotsDir: directory,
-        customSnapshotIdentifier,
-      });
-    };
+          // fixed params
+          customSnapshotsDir: directory,
+          customSnapshotIdentifier,
+        });
+      };
 
-    if (isUpdating) {
-      await sleep(SLEEP_BEFORE_UPDATING);
-      await testFn();
-    } else {
-      await sleep(SLEEP_BEFORE_CHECKING);
-      await waitForExpect(testFn, timeout, interval);
-    }
-  },
+      if (isUpdating) {
+        await sleep(SLEEP_BEFORE_UPDATING);
+        await testFn();
+      } else {
+        await sleep(SLEEP_BEFORE_CHECKING);
+        await waitForExpect(testFn, timeout, interval);
+      }
+    },
 
-  getDeviceType: async function () {
-    if (process.env.SCREENSHOT_DEVICE_TYPE)
-      return process.env.SCREENSHOT_DEVICE_TYPE;
+    getDeviceType: async function () {
+      if (process.env.SCREENSHOT_DEVICE_TYPE)
+        return process.env.SCREENSHOT_DEVICE_TYPE;
 
-    return getPlatformShortcut() + "_x" + (await this.browserGetPixelRatio());
+      return getPlatformShortcut() + "_x" + (await this.browserGetPixelRatio());
+    },
   },
 };

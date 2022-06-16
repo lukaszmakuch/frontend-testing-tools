@@ -1,24 +1,27 @@
 module.exports = {
-  register: function (cb) {
-    if (!this.registeredTeardownCallbacks) {
-      this.registeredTeardownCallbacks = [];
-    }
-
-    const cbThatDoesntThrow = async () => {
-      try {
-        await cb();
-      } catch (e) {
-        console.warn("An error occurred during the teardown phase", e);
+  name: "teardown",
+  methods: {
+    register: function (cb) {
+      if (!this.registeredTeardownCallbacks) {
+        this.registeredTeardownCallbacks = [];
       }
-    };
 
-    this.registeredTeardownCallbacks.push(cbThatDoesntThrow);
-  },
+      const cbThatDoesntThrow = async () => {
+        try {
+          await cb();
+        } catch (e) {
+          console.warn("An error occurred during the teardown phase", e);
+        }
+      };
 
-  execute: async function () {
-    const cbs = this.registeredTeardownCallbacks || [];
-    for (let i = 0; i < cbs.length; i++) {
-      await cbs[i]();
-    }
+      this.registeredTeardownCallbacks.push(cbThatDoesntThrow);
+    },
+
+    execute: async function () {
+      const cbs = this.registeredTeardownCallbacks || [];
+      for (let i = 0; i < cbs.length; i++) {
+        await cbs[i]();
+      }
+    },
   },
 };

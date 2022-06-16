@@ -1,5 +1,8 @@
 module.exports = {
-  exec: async function (cb) {
-    await cb.bind(this)();
+  name: "playground",
+  methods: {
+    exec: async function (cb) {
+      await cb.bind(this)();
+    },
   },
 };

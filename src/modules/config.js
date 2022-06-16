@@ -1,7 +1,10 @@
 const { read } = require("../config");
 
 module.exports = {
-  read: function () {
-    return read();
+  name: "config",
+  methods: {
+    read: function () {
+      return read();
+    },
   },
 };

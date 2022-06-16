@@ -4,54 +4,57 @@ const { Builder } = require("selenium-webdriver");
 require("chromedriver");
 
 module.exports = {
-  open: async function () {
-    const options = new chrome.Options()
-      .windowSize({
-        width: this.configRead().browser.default.width,
-        height: this.configRead().browser.default.height,
-      })
-      .addArguments("--user-agent=frontend-testing-tools");
+  name: "browser",
+  methods: {
+    open: async function () {
+      const options = new chrome.Options()
+        .windowSize({
+          width: this.configRead().browser.default.width,
+          height: this.configRead().browser.default.height,
+        })
+        .addArguments("--user-agent=frontend-testing-tools");
 
-    let driver = new webdriver.Builder()
-      .forBrowser("chrome")
-      .setChromeOptions(options)
-      .build();
+      let driver = new webdriver.Builder()
+        .forBrowser("chrome")
+        .setChromeOptions(options)
+        .build();
 
-    await driver.sendDevToolsCommand("Emulation.setFocusEmulationEnabled", {
-      enabled: true,
-    });
-    this.driver = driver;
+      await driver.sendDevToolsCommand("Emulation.setFocusEmulationEnabled", {
+        enabled: true,
+      });
+      this.driver = driver;
 
-    // await this.browserTriggerOnOpenListeners();
+      // await this.browserTriggerOnOpenListeners();
 
-    this.teardownRegister(() => this.browserClose());
-  },
+      this.teardownRegister(() => this.browserClose());
+    },
 
-  // addListenerOnOpen: function (fn) {
-  //   this._browserListenersOnOpen = [
-  //     ...(this._browserListenersOnOpen || []),
-  //     fn,
-  //   ];
-  // },
+    // addListenerOnOpen: function (fn) {
+    //   this._browserListenersOnOpen = [
+    //     ...(this._browserListenersOnOpen || []),
+    //     fn,
+    //   ];
+    // },
 
-  // triggerOnOpenListeners: async function () {
-  //   const listeners = this._browserListenersOnOpen || [];
-  //   for (let i = 0; i < listeners.length; i++) {
-  //     await listeners[i]();
-  //   }
-  // },
+    // triggerOnOpenListeners: async function () {
+    //   const listeners = this._browserListenersOnOpen || [];
+    //   for (let i = 0; i < listeners.length; i++) {
+    //     await listeners[i]();
+    //   }
+    // },
 
-  getPixelRatio: async function () {
-    if (!this._cachedBrowserPixelRatio) {
-      this._cachedBrowserPixelRatio = await this.driver.executeScript(
-        "return window.devicePixelRatio;"
-      );
-    }
+    getPixelRatio: async function () {
+      if (!this._cachedBrowserPixelRatio) {
+        this._cachedBrowserPixelRatio = await this.driver.executeScript(
+          "return window.devicePixelRatio;"
+        );
+      }
 
-    return this._cachedBrowserPixelRatio;
-  },
+      return this._cachedBrowserPixelRatio;
+    },
 
-  close: async function () {
-    await this.driver.quit();
+    close: async function () {
+      await this.driver.quit();
+    },
   },
 };
