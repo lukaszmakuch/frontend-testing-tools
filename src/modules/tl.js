@@ -1,9 +1,23 @@
-const { noop } = require("lodash");
+const {
+  noop,
+  isFunction,
+  cond,
+  isPlainObject,
+  isRegExp,
+  conforms,
+  constant,
+  isString,
+} = require("lodash");
 const waitForExpect = require("wait-for-expect");
 
 // Serialized so that we can pass RegExps from this test via selenium to the browser.
+
+function isTextMatch(maybeTextMatch) {
+  return isRegExp(maybeTextMatch) || isString(maybeTextMatch);
+}
+
 function serializeTextMatch(textMatch) {
-  if (textMatch instanceof RegExp) {
+  if (isRegExp(textMatch)) {
     return JSON.stringify({
       type: "regexp",
       source: textMatch.source,
@@ -80,37 +94,10 @@ let testingLibraryModule = {
     this._testingLibraryInstalled = true;
   },
 
-  findByRole: async function (roleTextMatch, options, cb) {
-    await this.tlInstallIfNeeded();
-    const element = await this.driver.executeScript(
-      `
-      return window.TestingLibraryDom.findByRole(
-        document,
-        window.unserializeTextMatch(arguments[0]),
-        window.unserializeByRoleOptions(arguments[1]),
-      )
-    `,
-      serializeTextMatch(roleTextMatch),
-      serializeByRoleOptions(options)
-    );
-    await cb(element);
-  },
-
-  findByText: async function (textMatch, cb = noop) {
-    await this.tlInstallIfNeeded();
-    const element = await this.driver.executeScript(
-      `
-      return window.TestingLibraryDom.findByText(document, window.unserializeTextMatch(arguments[0]))
-    `,
-      serializeTextMatch(textMatch)
-    );
-    await cb(element);
-  },
-
   // TODO: findByAnyText based on the hierarchy described here https://testing-library.com/docs/queries/about/
 };
 
-// Queries
+// Queries:
 [
   "findByRole",
   "findByLabelText",
@@ -121,28 +108,96 @@ let testingLibraryModule = {
   "findByTitle",
   "findByTestId",
 ].forEach((queryFnName) => {
-  testingLibraryModule[queryFnName] = async function (
-    firstParam,
-    maybeOptions,
-    maybeCb
-  ) {
-    const options = maybeCb ? maybeOptions : {};
-    const cb = maybeCb ?? maybeOption;
+  testingLibraryModule[queryFnName] = async function (...args) {
+    // prettier-ignore
+    const [containerName, matcher, options, cb] = cond([
+      [
+        conforms([ isString, isTextMatch, isPlainObject, isFunction ]),
+        constant([ args[0], args[1], args[2], args[3] ])
+      ],
+      [
+        conforms([ isTextMatch, isPlainObject, isFunction ]),
+        constant([ null, args[0], args[1], args[2] ])
+      ],
+
+      [
+        conforms([ isString, isTextMatch, isPlainObject ]),
+        constant([ args[0], args[1], args[2], null ])
+      ],
+      [
+        conforms([ isTextMatch, isPlainObject ]),
+        constant([ null, args[0], args[1], null ])
+      ],
+
+      [
+        conforms([ isString, isTextMatch, isFunction ]),
+        constant([ args[0], args[1], {}, args[2] ])
+      ],
+      [
+        conforms([ isTextMatch, isFunction ]),
+        constant([ null, args[0], {}, args[1] ])
+      ],
+
+      [
+        conforms([ isString, isTextMatch ]),
+        constant([ args[0], args[1], {}, null ])
+      ],
+      [
+        conforms([ isTextMatch ]),
+        constant([ null, args[0], {}, null ])
+      ],
+
+    ])(args);
 
     await this.tlInstallIfNeeded();
+    const containerElem = containerName
+      ? await this.containerGet(containerName)
+      : undefined;
     const element = await this.driver.executeScript(
       `
-      return window.TestingLibraryDom[arguments[0]](
-        document,
-        window.unserializeTextMatch(arguments[1]),
-        window.unserializeTestingLibraryOptions(arguments[2]),
-      )
+      return window.TestingLibraryDom.within(
+        arguments[1] ?? document
+      )[arguments[0]](
+        window.unserializeTextMatch(arguments[2]),
+        window.unserializeTestingLibraryOptions(arguments[3]),
+      );
     `,
       queryFnName,
-      serializeTextMatch(firstParam),
+      containerElem,
+      serializeTextMatch(matcher),
       serializeTestingLibraryOptions(options)
     );
-    await cb(element);
+
+    if (cb) {
+      await cb(element);
+    } else {
+      return element;
+    }
+  };
+});
+
+// Container settings shorthands:
+[
+  "ByRole",
+  "ByLabelText",
+  "ByPlaceholderText",
+  "ByText",
+  "ByDisplayValue",
+  "ByAltText",
+  "ByTitle",
+  "ByTestId",
+].forEach((queryFnNamePart) => {
+  const containerSettingFnName = `setContainer${queryFnNamePart}`;
+  const queryFnName = `tlFind${queryFnNamePart}`;
+
+  testingLibraryModule[containerSettingFnName] = async function (
+    containerName,
+    ...rest
+  ) {
+    this.containerSet(containerName, async function () {
+      const containerElem = await this[queryFnName](...rest);
+      return containerElem;
+    });
   };
 });
 

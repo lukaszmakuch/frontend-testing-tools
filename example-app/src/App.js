@@ -39,21 +39,24 @@ function App() {
 
   return (
     <div>
-      <ul>
-        {entries.map((entry) => (
-          <li key={entry.id}>{entry.value}</li>
-        ))}
-      </ul>
-      <input
-        type="text"
-        disabled={inputLocked}
-        value={inputValue}
-        onInput={(e) => setInputValue(e.target.value)}
-        placeholder={placeholder.toUpperCase()}
-      ></input>
-      <button disabled={inputLocked} type="button" onClick={handleAdd}>
-        add
-      </button>
+      <form data-testid="myForm">
+        <ul>
+          {entries.map((entry) => (
+            <li key={entry.id}>{entry.value}</li>
+          ))}
+        </ul>
+        <input
+          type="text"
+          disabled={inputLocked}
+          value={inputValue}
+          onInput={(e) => setInputValue(e.target.value)}
+          placeholder={placeholder.toUpperCase()}
+        ></input>
+        <button disabled={inputLocked} type="button" onClick={handleAdd}>
+          add
+        </button>
+      </form>
+      <button>add</button>
     </div>
   );
 }
