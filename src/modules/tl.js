@@ -8,7 +8,11 @@ const {
   constant,
   isString,
 } = require("lodash");
+const path = require("path");
+const { readFile } = require("node:fs/promises");
 const waitForExpect = require("wait-for-expect");
+
+// node_modules/@testing-library/dom/dist/@testing-library/dom.umd.min.js
 
 // Serialized so that we can pass RegExps from this test via selenium to the browser.
 
@@ -72,15 +76,32 @@ let testingLibraryModule = {
   installIfNeeded: async function () {
     if (this._testingLibraryInstalled) return;
 
-    await this.driver.executeScript(`
-      const url = 'https://unpkg.com/@testing-library/dom@8.13.0/dist/@testing-library/dom.umd.js';
-      const scriptTag = document.createElement("script");
-      scriptTag.setAttribute("src", url); 
-      scriptTag.setAttribute("type", "text/javascript"); 
-      document.head.appendChild(scriptTag);
+    const testingLibrarySource = await readFile(
+      path.resolve(
+        path.dirname(require.resolve("@testing-library/dom")),
+        "@testing-library/dom.umd.min.js"
+      ),
+      "utf-8"
+    );
+
+    await this.driver.executeScript(
+      `
+      var testingLibraryScriptElement = document.createElement("script");
+      testingLibraryScriptElement.setAttribute("src", URL.createObjectURL(
+        new File(
+          [arguments[0]],
+          "dom-testing-library.js",
+          { type: "text/plain" }
+        )
+      )); 
+      testingLibraryScriptElement.setAttribute("type", "text/javascript"); 
+      document.head.appendChild(testingLibraryScriptElement);
+
       window.unserializeTextMatch = ${unserializeTextMatch};
       window.unserializeTestingLibraryOptions = ${unserializeTestingLibraryOptions};
-    `);
+    `,
+      [testingLibrarySource]
+    );
 
     await waitForExpect(async () => {
       const notInstalled = await this.driver.executeScript(`

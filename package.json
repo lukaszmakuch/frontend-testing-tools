@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@testing-library/dom": "^8.13.0",
     "chromedriver": "^101.0.0",
     "endpoint-imposter-utils": "git@github.com:lukaszmakuch/endpoint-imposter-utils.git",
     "escodegen": "^2.0.0",
