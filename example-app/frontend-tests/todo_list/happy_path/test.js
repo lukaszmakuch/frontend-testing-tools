@@ -3,6 +3,7 @@ test(NAME, () =>
     .browserOpen()
     .setupStart()
     .eiUse()
+    .timeMock("04 Dec 1995 00:12:00 GMT")
     .setupFinish()
 
     .containerSet("form", () => testCtx[0].tlFindByTestId("myForm"))
@@ -14,7 +15,6 @@ test(NAME, () =>
     .playgroundExec(async function () {
       console.log({
         fetched: await testCtx[0].tlFindByText("form", /a(D{2,3})/i),
-        // container: await testCtx[0].containerGet("form"),
       });
     })
     .screenshotTake("loadingItems")

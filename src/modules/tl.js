@@ -12,14 +12,11 @@ const path = require("path");
 const { readFile } = require("node:fs/promises");
 const waitForExpect = require("wait-for-expect");
 
-// node_modules/@testing-library/dom/dist/@testing-library/dom.umd.min.js
-
-// Serialized so that we can pass RegExps from this test via selenium to the browser.
-
 function isTextMatch(maybeTextMatch) {
   return isRegExp(maybeTextMatch) || isString(maybeTextMatch);
 }
 
+// Serialized so that we can pass RegExps from this test via selenium to the browser.
 function serializeTextMatch(textMatch) {
   if (isRegExp(textMatch)) {
     return JSON.stringify({
@@ -76,8 +73,14 @@ let testingLibraryModule = {
   unserializeTextMatch,
 
   methods: {
+    isInstalled: async function () {
+      return await this.driver.executeScript(`
+        return !!window.TestingLibraryDom
+      `);
+    },
+
     installIfNeeded: async function () {
-      if (this._testingLibraryInstalled) return;
+      if (await this.tlIsInstalled()) return;
 
       const testingLibrarySource = await readFile(
         path.resolve(
@@ -112,8 +115,6 @@ let testingLibraryModule = {
         `);
         if (notInstalled) throw new Error("Testing Library not installed");
       });
-
-      this._testingLibraryInstalled = true;
     },
   },
 };

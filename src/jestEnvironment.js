@@ -1,6 +1,6 @@
+const NodeEnvironment = require("jest-environment-node").default;
 const { makeTestExecutionContext } = require("./testExecutionContext");
 const { testNameByFilename } = require("./testNameByFilename");
-const NodeEnvironment = require("jest-environment-node").default;
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
@@ -9,12 +9,13 @@ class CustomEnvironment extends NodeEnvironment {
       config.globalConfig.updateSnapshot === "all";
     this.global.testPath = context.testPath;
     this.global.NAME = testNameByFilename({ filename: context.testPath });
+    this.global.rootDir = config.globalConfig.rootDir;
+
     // this.docblockPragmas = context.docblockPragmas;
   }
 
   async setup() {
     await super.setup();
-
     const testCtx = makeTestExecutionContext();
     this.global.testCtx = testCtx;
     // await someSetupTasks(this.testPath);

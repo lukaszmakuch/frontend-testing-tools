@@ -5,6 +5,9 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 window.API_ROOT = "http://localhost:3010/sess/";
+window._testSetHttpApiUrl = function (url) {
+  window.API_ROOT = url;
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const toRender = (
@@ -12,10 +15,6 @@ const toRender = (
     <App />
   </React.StrictMode>
 );
-
-window._testSetHttpApiUrl = function (url) {
-  window.API_ROOT = url;
-};
 
 window._testContinueRendering = function () {
   root.render(toRender);

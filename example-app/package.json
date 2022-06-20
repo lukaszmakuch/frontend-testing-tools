@@ -18,7 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "APP_ROOT_URL=http://localhost:3001/ jest -c frontend-tests/jest.config.js",
+    "test": "APP_ROOT_URL=http://localhost:3000/ jest -c frontend-tests/jest.config.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

@@ -37,6 +37,13 @@ if (!/frontend-testing-tools/.test(navigator.userAgent))
   window._testContinueRendering();
 ```
 
+The `test` command:
+
+```
+    "test": "APP_ROOT_URL=http://localhost:3001/ jest -c frontend-tests/jest.config.js",
+
+```
+
 ## An example test:
 
 ```

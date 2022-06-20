@@ -1,4 +1,8 @@
+const { readFile } = require("node:fs/promises");
+const path = require("path");
 const { v4: uuid } = require("uuid");
+const { getTmpDir } = require("../tmpdir");
+
 const {
   makeEndpointImposterCommunicationInterface,
 } = require("endpoint-imposter-utils");
@@ -8,6 +12,14 @@ function makeEIModule() {
     name: "ei",
     methods: {
       installIfNeeded: async function () {
+        const tmpDir = await getTmpDir({
+          rootDir: global.rootDir,
+        });
+        const eiEndpoint = await readFile(
+          path.join(tmpDir, "eiEndpoint"),
+          "utf-8"
+        );
+
         if (!this.eISessionId) {
           const eISessionId = uuid();
           this.eISessionId = eISessionId;
@@ -15,7 +27,7 @@ function makeEIModule() {
         if (!this.endpointImposterCommunicationInterface) {
           this.endpointImposterCommunicationInterface =
             makeEndpointImposterCommunicationInterface({
-              url: __ENDPOINT_IMPOSTER_ROOT__,
+              url: eiEndpoint,
               sessionId: this.eISessionId,
               prefix: NAME,
             });
