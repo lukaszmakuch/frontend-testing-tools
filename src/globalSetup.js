@@ -1,5 +1,5 @@
 const startEndpointImposter = require("start-endpoint-imposter");
-const { unlink, rmdir, writeFile } = require("fs").promises;
+const { rm, writeFile } = require("fs").promises;
 var portastic = require("portastic");
 const path = require("path");
 const { locateMockFiles, createEntryPointFile } = require("./mocks");
@@ -28,8 +28,7 @@ module.exports = async (globalConfig) => {
 
   const stop = async () => {
     await stopEI();
-    await unlink(mocksEntryPointFile);
-    await rmdir(tmpDir);
+    await rm(tmpDir, { recursive: true });
   };
   globalThis.__ENDPOINT_IMPOSTER_PORT__ = port;
   globalThis.__ENDPOINT_IMPOSTER_ROOT__ = `http://localhost:${port}`;
