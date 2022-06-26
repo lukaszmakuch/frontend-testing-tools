@@ -1,10 +1,15 @@
 const NodeEnvironment = require("jest-environment-node").default;
 const { makeTestExecutionContext } = require("./testExecutionContext");
 const { testNameByFilename } = require("./testNameByFilename");
+const { isEmpty } = require("lodash");
 
 class CustomEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
+    // TODO: make it better
+    this.global.__IS_DEBUGGING__ = !isEmpty(
+      config.globalConfig.testPathPattern
+    );
     this.global.updatingSnapshots =
       config.globalConfig.updateSnapshot === "all";
     this.global.testPath = context.testPath;

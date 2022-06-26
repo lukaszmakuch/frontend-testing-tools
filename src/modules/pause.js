@@ -5,6 +5,8 @@ module.exports = {
   name: "pause",
   methods: {
     test: async function () {
+      if (!__IS_DEBUGGING__) return;
+
       let rl;
       try {
         rl = readline.createInterface({

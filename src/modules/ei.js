@@ -11,15 +11,14 @@ function makeEIModule() {
   return {
     name: "ei",
     methods: {
-      installIfNeeded: async function () {
+      endpoint: async function () {
         const tmpDir = await getTmpDir({
           rootDir: global.rootDir,
         });
-        const eiEndpoint = await readFile(
-          path.join(tmpDir, "eiEndpoint"),
-          "utf-8"
-        );
+        return await readFile(path.join(tmpDir, "eiEndpoint"), "utf-8");
+      },
 
+      installIfNeeded: async function () {
         if (!this.eISessionId) {
           const eISessionId = uuid();
           this.eISessionId = eISessionId;
@@ -27,7 +26,7 @@ function makeEIModule() {
         if (!this.endpointImposterCommunicationInterface) {
           this.endpointImposterCommunicationInterface =
             makeEndpointImposterCommunicationInterface({
-              url: eiEndpoint,
+              url: await this.eiEndpoint(),
               sessionId: this.eISessionId,
               prefix: NAME,
             });
@@ -48,7 +47,8 @@ function makeEIModule() {
       use: async function use({} = {}) {
         await this.eiInstallIfNeeded();
 
-        const httpApiUrl = `${__ENDPOINT_IMPOSTER_ROOT__}/${this.eISessionId}/${NAME}`;
+        const eiEndpoint = await this.eiEndpoint();
+        const httpApiUrl = `${eiEndpoint}/${this.eISessionId}/${NAME}`;
         const errorMsg =
           "No window._testSetHttpApiUrl function found while trying to set the HTTP client up to use Endpoint Imposter";
         const setSuccessfully = await this.driver.executeScript(

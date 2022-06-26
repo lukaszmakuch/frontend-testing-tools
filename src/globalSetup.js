@@ -31,7 +31,6 @@ module.exports = async (globalConfig) => {
     await rm(tmpDir, { recursive: true });
   };
   globalThis.__ENDPOINT_IMPOSTER_PORT__ = port;
-  globalThis.__ENDPOINT_IMPOSTER_ROOT__ = `http://localhost:${port}`;
   globalThis.__STOP_ENDPOINT_IMPOSTER__ = stop;
-  await writeFile(path.join(tmpDir, "eiEndpoint"), __ENDPOINT_IMPOSTER_ROOT__);
+  await writeFile(path.join(tmpDir, "eiEndpoint"), `http://localhost:${port}`);
 };
