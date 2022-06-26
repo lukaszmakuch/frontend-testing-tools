@@ -193,7 +193,7 @@ let testingLibraryModule = {
     if (cb) {
       await cb(element);
     } else {
-      return element;
+      return [element];
     }
   };
 });
@@ -216,8 +216,8 @@ let testingLibraryModule = {
     containerName,
     ...rest
   ) {
-    this.containerSet(containerName, async function () {
-      const containerElem = await this[queryFnName](...rest);
+    await this.containerSet(containerName, async function () {
+      const [containerElem] = await this[queryFnName](...rest);
       return containerElem;
     });
   };

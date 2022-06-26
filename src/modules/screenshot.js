@@ -56,9 +56,10 @@ module.exports = {
       const testFn = async () => {
         const screenshot = await this.driver.takeScreenshot();
         expect(screenshot).toMatchImageSnapshot({
-          failureThreshold: this.configRead().screenshot.failureThreshold,
-          failureThresholdType:
-            this.configRead().screenshot.failureThresholdType,
+          failureThreshold: (await this.configRead()).screenshot
+            .failureThreshold,
+          failureThresholdType: (await this.configRead()).screenshot
+            .failureThresholdType,
 
           // fixed params
           customSnapshotsDir: directory,

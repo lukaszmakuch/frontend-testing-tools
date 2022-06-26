@@ -1,3 +1,5 @@
+const { isArrayLike } = require("lodash");
+
 async function consolidateAsyncMethodCalls({
   initialPromise,
   recordedCalls,
@@ -6,7 +8,13 @@ async function consolidateAsyncMethodCalls({
   let lastRes = await initialPromise;
   for (let i = 0; i < recordedCalls.length; i++) {
     const recordedCall = recordedCalls[i];
-    lastRes = await obj[recordedCall.method](...recordedCall.args);
+    // This part supports returning some arguments which are later
+    // pased as arguments to the next chained method
+    const argsToPass = [
+      ...(isArrayLike(lastRes) ? lastRes : []),
+      ...recordedCall.args,
+    ];
+    lastRes = await obj[recordedCall.method](...argsToPass);
   }
 
   return lastRes;
@@ -48,8 +56,6 @@ function recordAsyncCalls({ initialPromise, obj }) {
 }
 
 function makePromiseReturningCallsChainable(obj) {
-  obj.original = true;
-  obj.trace = Math.random();
   const objHolder = {};
   objHolder.obj = new Proxy(obj, {
     get(target, prop) {
@@ -58,19 +64,12 @@ function makePromiseReturningCallsChainable(obj) {
       }
 
       return function (...args) {
-        const result = obj[prop](...args);
-        if (result === obj) {
-          return objHolder.obj;
-        }
-
-        if (result?.then) {
-          return recordAsyncCalls({
-            initialPromise: result,
-            obj,
-          });
-        }
-
-        return result;
+        // TODO: perhaps refactor this part
+        const result = Promise.resolve(obj[prop](...args));
+        return recordAsyncCalls({
+          initialPromise: result,
+          obj,
+        });
       };
     },
   });

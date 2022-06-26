@@ -1,20 +1,20 @@
 module.exports = {
   name: "container",
   methods: {
-    set: async function (name, setter) {
-      this._containerSetters = {
-        ...(this._containerSetters ?? {}),
-        [name]: setter,
+    set: async function (name, getter) {
+      this._containerGetters = {
+        ...(this._containerGetters ?? {}),
+        [name]: getter,
       };
     },
 
     get: function (name) {
-      const setter = this._containerSetters?.[name];
-      if (!setter)
+      const getter = this._containerGetters?.[name];
+      if (!getter)
         throw new Error(
-          `No function to fetch a "${name}" containers has been registered.`
+          `No function to fetch a "${name}" container has been registered.`
         );
-      return setter.bind(this)();
+      return getter.bind(this)();
     },
   },
 };

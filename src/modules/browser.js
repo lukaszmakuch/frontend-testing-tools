@@ -1,6 +1,5 @@
 const webdriver = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
-const { Builder } = require("selenium-webdriver");
 require("chromedriver");
 
 module.exports = {
@@ -9,8 +8,8 @@ module.exports = {
     open: async function () {
       const options = new chrome.Options()
         .windowSize({
-          width: this.configRead().browser.default.width,
-          height: this.configRead().browser.default.height,
+          width: (await this.configRead()).browser.default.width,
+          height: (await this.configRead()).browser.default.height,
         })
         .addArguments("--user-agent=frontend-testing-tools");
 

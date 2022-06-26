@@ -7,12 +7,9 @@ module.exports = {
       const found = this.driver.wait(
         until.elementLocated(By.xpath(xpathQuery)),
         15000
-      ); // TODO: parametrize
+      );
       if (cb) await cb(found);
-      return found;
-    },
-    click: async function (xpathQuery) {
-      (await this.xpathQuery(xpathQuery)).click(); // TODO: use "self" once we have it
+      else return [found];
     },
   },
 };

@@ -7,12 +7,12 @@ const timeModule = require("./modules/time");
 const teardownModule = require("./modules/teardown");
 const makeEIModule = require("./modules/ei");
 const xpathModule = require("./modules/xpath");
-const textModule = require("./modules/text");
 const pauseModule = require("./modules/pause");
 const configModule = require("./modules/config");
 const playgroundModule = require("./modules/playground");
 const tlModule = require("./modules/tl");
 const containerModule = require("./modules/container");
+const clickModule = require("./modules/click");
 
 // TODO: parametrize these three
 waitForExpect.defaults.timeout = 1100;
@@ -28,9 +28,9 @@ testCtx.swapModule(setupModule);
 testCtx.swapModule(teardownModule);
 testCtx.swapModule(makeEIModule());
 testCtx.swapModule(xpathModule);
-testCtx.swapModule(textModule);
 testCtx.swapModule(pauseModule);
 testCtx.swapModule(configModule);
 testCtx.swapModule(playgroundModule);
 testCtx.swapModule(tlModule);
 testCtx.swapModule(containerModule);
+testCtx.swapModule(clickModule);

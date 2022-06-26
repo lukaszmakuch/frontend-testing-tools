@@ -5,7 +5,6 @@ test(NAME, () =>
     .eiUse()
     .timeMock("04 Dec 1995 00:12:00 GMT")
     .setupFinish()
-
     .containerSet("form", () => testCtx[0].tlFindByTestId("myForm"))
     .tlSetContainerByTestId("form", "myForm")
     .tlFindByRole("form", /b.tton/, { name: /DD/i }, async (button) => {
@@ -29,7 +28,8 @@ test(NAME, () =>
       input.sendKeys("new item")
     )
     .screenshotTake("typed")
-    .tlFindByText("form", "add", (e) => e.click())
+    .tlFindByText("form", "add")
+    .clickIt()
     .screenshotTake("adding")
     .eiRelease("adding")
     .eiRelease("items")

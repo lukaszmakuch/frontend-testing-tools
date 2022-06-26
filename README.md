@@ -30,9 +30,7 @@ window._testSetHttpApiUrl = function (url) {
   window.API_ROOT = url;
 };
 
-window._testContinueRendering = function () {
-  root.render(toRender);
-};
+window._testContinueRendering = () => root.render(toRender);
 if (!/frontend-testing-tools/.test(navigator.userAgent))
   window._testContinueRendering();
 ```
