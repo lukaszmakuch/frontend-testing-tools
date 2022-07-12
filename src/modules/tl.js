@@ -198,29 +198,4 @@ let testingLibraryModule = {
   };
 });
 
-// Container settings shorthands:
-[
-  "ByRole",
-  "ByLabelText",
-  "ByPlaceholderText",
-  "ByText",
-  "ByDisplayValue",
-  "ByAltText",
-  "ByTitle",
-  "ByTestId",
-].forEach((queryFnNamePart) => {
-  const containerSettingFnName = `setContainer${queryFnNamePart}`;
-  const queryFnName = `tlFind${queryFnNamePart}`;
-
-  testingLibraryModule.methods[containerSettingFnName] = async function (
-    containerName,
-    ...rest
-  ) {
-    await this.containerSet(containerName, async function () {
-      const [containerElem] = await this[queryFnName](...rest);
-      return containerElem;
-    });
-  };
-});
-
 module.exports = testingLibraryModule;

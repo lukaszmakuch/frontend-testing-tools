@@ -1,8 +1,12 @@
+const { initial, last } = require("lodash");
+
 module.exports = {
   name: "playground",
   methods: {
-    exec: async function (cb) {
-      await cb.bind(this)();
+    exec: async function (...allArgs) {
+      const cb = last(allArgs);
+      const args = initial(allArgs);
+      await cb.bind(this)(...args);
     },
   },
 };

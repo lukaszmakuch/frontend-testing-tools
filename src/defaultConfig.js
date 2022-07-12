@@ -8,7 +8,8 @@ module.exports = {
   screenshot: {
     comparisonOptions: {
       // exactly as described at https://github.com/americanexpress/jest-image-snapshot#%EF%B8%8F-api
-      failureThreshold: 0.0001,
+      comparisonMethod: "ssim",
+      failureThreshold: 0.01,
       failureThresholdType: "percent",
     },
   },

@@ -5,8 +5,12 @@ test(NAME, () =>
     .eiUse()
     .timeMock("04 Dec 1995 00:12:00 GMT")
     .setupFinish()
-    .containerSet("form", () => testCtx[0].tlFindByTestId("myForm"))
-    .tlSetContainerByTestId("form", "myForm")
+    .tlFindByTestId("myForm")
+    .containerSet("form")
+
+    .tlFindByRole("form", /b.tton/, { name: /DD/i })
+    .playgroundExec((foundElement) => console.log(foundElement))
+    .pauseTest()
     .tlFindByRole("form", /b.tton/, { name: /DD/i }, async (button) => {
       console.log(button);
     })
@@ -19,7 +23,6 @@ test(NAME, () =>
     .screenshotTake("loadingItems")
     // .pauseTest()
     .eiRelease("items")
-    .tlSetContainerByTestId("form", "myForm")
     .tlFindByText("form", "add", (e) => {})
     .eiExpectOk("/pingPong")
     .screenshotTake("myFirstScreen")
