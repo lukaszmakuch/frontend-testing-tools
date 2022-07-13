@@ -3,8 +3,14 @@ test(NAME, () =>
     .browserOpen()
     .setupStart()
     .eiUse()
-    .timeMock("04 Dec 1995 00:12:00 GMT")
     .setupFinish()
+    .timeMock("04 Dec 1995 00:12:00 GMT")
+    .pauseTest()
+    .timeMock("04 Dec 1995 00:12:01 GMT")
+    .pauseTest()
+    .timeMock("04 Dec 1995 00:12:10 GMT")
+    .pauseTest()
+
     .tlFindByTestId("myForm")
     .containerSet("form")
 
