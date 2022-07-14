@@ -5,11 +5,11 @@ test(NAME, () =>
     .eiUse()
     .setupFinish()
     .timeMock("04 Dec 1995 00:12:00 GMT")
-    .pauseTest()
+    // .pauseTest()
     .timeMock("04 Dec 1995 00:12:01 GMT")
-    .pauseTest()
+    // .pauseTest()
     .timeMock("04 Dec 1995 00:12:10 GMT")
-    .pauseTest()
+    // .pauseTest()
 
     .tlFindByTestId("myForm")
     .containerSet("form")
@@ -32,7 +32,7 @@ test(NAME, () =>
     .tlFindByText("form", "add", (e) => {})
     .eiExpectOk("/pingPong")
     .screenshotTake("myFirstScreen")
-    .pauseTest()
+    // .pauseTest()
     .xpathQuery('//*[@placeholder="TYPE HERE"]', (input) =>
       input.sendKeys("new item")
     )

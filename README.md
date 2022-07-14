@@ -1,90 +1,67 @@
-# Frontend Testing Utils
+# Frontend Testing Tools
 
-WIP
+Save thousands of dollars by employing pragmatic frontend tests developers enjoy writing!
 
-## Setting up the app
+Check out the Wiki!
 
-Jest config:
+## What's the problem?
 
-```
-const { defaults } = require("jest-config");
+I've seen companies spend thousands of dollars on just setting up and fine-tuning their testing tools. I've seen developers work long hours just to implement the right assertions and mocks.
 
-module.exports = {
-  ...defaults,
-  testEnvironment:
-    "../node_modules/frontend-testing-tools/src/jestEnvironment.js",
-  setupFilesAfterEnv: [
-    "../node_modules/frontend-testing-tools/src/setupFilesAfterEnv.js",
-  ],
-  globalSetup: "../node_modules/frontend-testing-tools/src/globalSetup.js",
-  globalTeardown:
-    "../node_modules/frontend-testing-tools/src/globalTeardown.js",
-};
+## What do I do about it?
 
-```
+I thought to myself, 'Wow! They really do care about doing a good job! They want to be professional! They don't want to disappoint their clients!'.
 
-The app's entry point:
+I know it's not an easy task, but I support people like that, because I too care about doing a good job. In the same time, as an IT consultant, I fight repetition and strive for cost-efficient processes I can quickly apply in various projects.
 
-```
-window._testSetHttpApiUrl = function (url) {
-  window.API_ROOT = url;
-};
+Wouldn't it be nice if you could just install an npm package and start developing tests of complex UIs?
 
-window._testContinueRendering = () => root.render(toRender);
-if (!/frontend-testing-tools/.test(navigator.userAgent))
-  window._testContinueRendering();
-```
+That's why I created Frontend Testing Tools.
 
-The `test` command:
+## What is this package?
 
-```
-    "test": "APP_ROOT_URL=http://localhost:3001/ jest -c frontend-tests/jest.config.js",
+What you’re looking at is a distribution of testing tools that work together well providing a synergetic effect. It’s years of my experience as a test-writing developer distilled into a single npm package.
 
-```
+## Whom is it for?
 
-## An example test:
+You need this toolbox if you want to:
 
-```
-test(NAME, () =>
-  testCtx[0]
-    .browserOpen()
-    .setupStart()
-    .eiUse()
-    .setupFinish()
-    .screenshotTake("loadingItems")
-    .eiRelease("items")
-    .eiExpectOk("/pingPong")
-    .screenshotTake("myFirstScreen")
-    .xpathQuery('//*[@placeholder="TYPE HERE"]', (input) =>
-      input.sendKeys("new item")
-    )
-    .screenshotTake("typed")
-    .textClick("add")
-    .screenshotTake("adding")
-    .eiRelease("adding")
-    .eiRelease("items")
-    .screenshotTake("added")
-);
+- confidently develop the frontend even before the backend is ready
+- test the problematic edge cases, such as 'What happens when this response arrives before that response?'
+- automatically catch visual regression
+- communicate with managers and other stakeholders easily by sending them screenshots illustrating every state of the app
 
-```
+## What does it consist of?
 
-## Configuration:
+It's really just a glue code among smaller, battle-tested pieces of testing software. It provides a synergetic effect by combining:
 
-You can specify global options in the package.json file like that:
+- Kent C. Dodds' [Testing Library](https://testing-library.com) for natural, accessible selectors
+- American Express' [jest-image-snapshot](https://www.npmjs.com/package/jest-image-snapshot) because that's how you can make assertions regarding what your app actually renders on the screen
+- Facebook's [Jest](https://jestjs.io/) which runs tests in parallel beautifully
+- [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/) because ist's the rock-solid recommendation of W3C
+- [Endpoint Imposter](https://endpoint-imposter.js.org/) for its ability to mock stateful APIs in a declarative manner
 
-```
-"frontend-testing-tools": {
-  "browser": {
-    "default": {
-      "width": 1024,
-      "height": 700
-    }
-  }
-}
-```
+As you can see, it's a pragmatic collection that stands on the shoulders of giants.
 
-A complete list of available parameters, their descriptions and default values can be found in the [src/defaultConfig.js](./src/defaultConfig.js) file.
+## What it is not
 
-Environmental variables:
+It's equally important to understand what kind of problems a tool doesn't solve as it is to understand what it helps with.
 
-- `SCREENSHOT_DEVICE_TYPE` overrides the destination folder of screenshots, such as "mac_x2" or "linux_x1"
+Frontend Testing Tools won't help you with testing:
+
+- performance
+- security
+- functions that are not related to frontend
+
+## Whom is it for
+
+It's for teams that want to develop frontend apps quicker by being able to parallelize the development of frontend and backend, automatically catch regression, and quickly test problematic edge cases.
+
+## Whom is it not for
+
+Let's be honest - using a tool just for the sake of using it may be detrimental to your team, as you'll be just burning cash.
+
+You may not need Frontend Testing Tools if your team:
+
+- honestly doesn't feel the need to automate testing, most probably because you already have a good enough system in place or you're facing some more pressing issues than bugs or the development process being slowed down by the frontend team waiting for the backend team
+- consists of developers who rely solely on CI environments and don't want to develop tests themselves

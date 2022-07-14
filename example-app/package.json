@@ -42,8 +42,8 @@
   "frontend-testing-tools": {
     "browser": {
       "default": {
-        "width": 1024,
-        "height": 700
+        "width": 200,
+        "height": 400
       }
     }
   }
