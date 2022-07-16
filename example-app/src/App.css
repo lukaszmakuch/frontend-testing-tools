@@ -14,7 +14,7 @@
 }
 
 input:disabled {
-  border: none;
+  /* border: none; */
 }
 
 .App-header {

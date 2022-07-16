@@ -16,9 +16,6 @@ const toMatchImageSnapshot = function (...args) {
 
   const rerun = this.snapshotState._runningScreenshots[uniqScreenshotId];
 
-  // see https://github.com/americanexpress/jest-image-snapshot/pull/257
-  if (!result.updated && !result.added) this.snapshotState.matched--;
-
   // just resetting what was initially set to make writing the code below easier
   if (!result.pass) this.snapshotState.unmatched--;
 
