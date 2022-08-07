@@ -16,7 +16,7 @@ test(NAME, () =>
 
     .tlFindByRole("form", /b.tton/, { name: /DD/i })
     .playgroundExec((foundElement) => console.log(foundElement))
-    .pauseTest()
+    // .pauseTest()
     .tlFindByRole("form", /b.tton/, { name: /DD/i }, async (button) => {
       console.log(button);
     })

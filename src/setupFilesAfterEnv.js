@@ -13,6 +13,7 @@ const playgroundModule = require("./modules/playground");
 const tlModule = require("./modules/tl");
 const containerModule = require("./modules/container");
 const clickModule = require("./modules/click");
+const _styleModule = require("./modules/_style");
 
 // TODO: parametrize these three
 waitForExpect.defaults.timeout = 1100;
@@ -34,3 +35,4 @@ testCtx.swapModule(playgroundModule);
 testCtx.swapModule(tlModule);
 testCtx.swapModule(containerModule);
 testCtx.swapModule(clickModule);
+testCtx.swapModule(_styleModule);

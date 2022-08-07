@@ -25,6 +25,7 @@ module.exports = {
   name: "screenshot",
   methods: {
     take: async function (id) {
+      await this.screenshotMakeCaretInvisibleIfItIsVisible();
       const customSnapshotIdentifier = id;
 
       const directory = path.resolve(
@@ -81,6 +82,17 @@ module.exports = {
         return process.env.SCREENSHOT_DEVICE_TYPE;
 
       return getPlatformShortcut() + "_x" + (await this.browserGetPixelRatio());
+    },
+
+    makeCaretInvisibleIfItIsVisible: async function () {
+      await this._styleInjectGlobal({
+        id: "testScreenshotInvisibleCaret",
+        content: `
+          * {
+            caret-color: transparent!important;
+          }
+        `,
+      });
     },
   },
 };
