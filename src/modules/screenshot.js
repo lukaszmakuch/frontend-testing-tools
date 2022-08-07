@@ -25,7 +25,11 @@ module.exports = {
   name: "screenshot",
   methods: {
     take: async function (id) {
-      await this.screenshotMakeCaretInvisibleIfItIsVisible();
+      // Setting the app so that results are repeatable:
+      await this.screenshotMakeCaretInvisible();
+      await this.screenshotMakeTransitionsInstant();
+
+      // Actually handling the screenshot matching:
       const customSnapshotIdentifier = id;
 
       const directory = path.resolve(
@@ -84,15 +88,20 @@ module.exports = {
       return getPlatformShortcut() + "_x" + (await this.browserGetPixelRatio());
     },
 
-    makeCaretInvisibleIfItIsVisible: async function () {
-      await this._styleInjectGlobal({
-        id: "testScreenshotInvisibleCaret",
-        content: `
-          * {
-            caret-color: transparent!important;
-          }
-        `,
-      });
+    makeCaretInvisible: async function () {
+      await this._styleInjectGlobal(`
+        * {
+          caret-color: transparent!important;
+        }
+      `);
+    },
+
+    makeTransitionsInstant: async function () {
+      await this._styleInjectGlobal(`
+        * {
+          transition-duration: 0s!important;
+        }
+      `);
     },
   },
 };

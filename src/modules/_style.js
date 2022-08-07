@@ -1,7 +1,11 @@
+const crypto = require("crypto");
+
 module.exports = {
   name: "_style",
   methods: {
-    injectGlobal: async function ({ id, content }) {
+    injectGlobal: async function (content) {
+      const id =
+        "testStyle" + crypto.createHash("md5").update(content).digest("hex");
       await this.driver.executeScript(
         function () {
           const { id, content } = arguments[0];

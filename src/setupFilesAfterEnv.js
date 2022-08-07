@@ -14,6 +14,7 @@ const tlModule = require("./modules/tl");
 const containerModule = require("./modules/container");
 const clickModule = require("./modules/click");
 const _styleModule = require("./modules/_style");
+const inputModule = require("./modules/input");
 
 // TODO: parametrize these three
 waitForExpect.defaults.timeout = 1100;
@@ -36,3 +37,4 @@ testCtx.swapModule(tlModule);
 testCtx.swapModule(containerModule);
 testCtx.swapModule(clickModule);
 testCtx.swapModule(_styleModule);
+testCtx.swapModule(inputModule);
