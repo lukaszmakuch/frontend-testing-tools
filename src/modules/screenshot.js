@@ -28,56 +28,61 @@ module.exports = {
       // Setting the app so that results are repeatable:
       await this.screenshotMakeCaretInvisible();
       await this.screenshotMakeTransitionsInstant();
+      await this.screenshotEnterEmulatedDevice();
 
-      // Actually handling the screenshot matching:
-      const customSnapshotIdentifier = id;
-
-      const directory = path.resolve(
-        path.dirname(testPath),
-        "screenshots",
-        await this.screenshotGetDeviceType()
-      );
-      const file = path.resolve(
-        directory,
-        `${customSnapshotIdentifier}-snap.png`
-      );
-
-      // It's true whenever we're forcefully updating existing snapshots,
-      // as indicated by the UPDATING env variable or when this snapshot
-      // hasn't been yet recorded.
-
-      let screenshotExists = true;
       try {
-        await access(file, fs.constants.F_OK);
-      } catch {
-        screenshotExists = false;
-      }
+        // Actually handling the screenshot matching:
+        const customSnapshotIdentifier = id;
 
-      const isUpdating = updatingSnapshots || !screenshotExists;
+        const directory = path.resolve(
+          path.dirname(testPath),
+          "screenshots",
+          await this.screenshotGetDeviceType()
+        );
+        const file = path.resolve(
+          directory,
+          `${customSnapshotIdentifier}-snap.png`
+        );
 
-      const timeout = 1000;
-      const interval = 500;
+        // It's true whenever we're forcefully updating existing snapshots,
+        // as indicated by the UPDATING env variable or when this snapshot
+        // hasn't been yet recorded.
 
-      const testFn = async () => {
-        const screenshot = await this.driver.takeScreenshot();
-        expect(screenshot).toMatchImageSnapshot({
-          failureThreshold: (await this.configRead()).screenshot
-            .failureThreshold,
-          failureThresholdType: (await this.configRead()).screenshot
-            .failureThresholdType,
+        let screenshotExists = true;
+        try {
+          await access(file, fs.constants.F_OK);
+        } catch {
+          screenshotExists = false;
+        }
 
-          // fixed params
-          customSnapshotsDir: directory,
-          customSnapshotIdentifier,
-        });
-      };
+        const isUpdating = updatingSnapshots || !screenshotExists;
 
-      if (isUpdating) {
-        await sleep(SLEEP_BEFORE_UPDATING);
-        await testFn();
-      } else {
-        await sleep(SLEEP_BEFORE_CHECKING);
-        await waitForExpect(testFn, timeout, interval);
+        const timeout = 1000;
+        const interval = 500;
+
+        const testFn = async () => {
+          const screenshot = await this.driver.takeScreenshot();
+          expect(screenshot).toMatchImageSnapshot({
+            failureThreshold: (await this.configRead()).screenshot
+              .failureThreshold,
+            failureThresholdType: (await this.configRead()).screenshot
+              .failureThresholdType,
+
+            // fixed params
+            customSnapshotsDir: directory,
+            customSnapshotIdentifier,
+          });
+        };
+
+        if (isUpdating) {
+          await sleep(SLEEP_BEFORE_UPDATING);
+          await testFn();
+        } else {
+          await sleep(SLEEP_BEFORE_CHECKING);
+          await waitForExpect(testFn, timeout, interval);
+        }
+      } finally {
+        await this.screenshotLeaveEmulatedDevice();
       }
     },
 
@@ -102,6 +107,30 @@ module.exports = {
           transition-duration: 0s!important;
         }
       `);
+    },
+
+    enterEmulatedDevice: async function () {
+      if (!(await this.screenshotUsingSimulatedDevice())) return;
+
+      await this.driver.sendDevToolsCommand(
+        "Emulation.setDeviceMetricsOverride",
+        (
+          await this.configRead()
+        ).screenshot.deviceMetrics
+      );
+    },
+
+    leaveEmulatedDevice: async function () {
+      if (!(await this.screenshotUsingSimulatedDevice())) return;
+
+      await this.driver.sendDevToolsCommand(
+        "Emulation.clearDeviceMetricsOverride",
+        {}
+      );
+    },
+
+    usingSimulatedDevice: async function () {
+      return !!(await this.configRead()).screenshot.deviceMetrics;
     },
   },
 };

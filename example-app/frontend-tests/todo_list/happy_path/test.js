@@ -2,6 +2,12 @@ test(NAME, () =>
   testCtx[0]
     .browserOpen()
     .setupStart()
+    .configOverride("screenshot.deviceMetrics", {
+      width: 200,
+      height: 200,
+      deviceScaleFactor: 3,
+      mobile: false,
+    })
     .eiUse()
     .setupFinish()
     .timeMock("04 Dec 1995 00:12:00 GMT")
@@ -43,6 +49,12 @@ test(NAME, () =>
     .tlFindByText("form", "add")
     .clickIt()
     .screenshotTake("adding")
+    .configOverride("screenshot.deviceMetrics", {
+      width: 200,
+      height: 500,
+      deviceScaleFactor: 3,
+      mobile: false,
+    })
     .eiRelease("adding")
     .eiRelease("items")
     .screenshotTake("added")
