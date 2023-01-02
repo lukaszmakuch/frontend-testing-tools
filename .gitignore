@@ -1,2 +1,3 @@
 node_modules
 src/playground.js
+.DS_Store

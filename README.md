@@ -2,7 +2,10 @@
 
 Save thousands of dollars by employing pragmatic frontend tests developers enjoy writing!
 
-Check out the Wiki!
+Resources:
+
+- 📄 [the Wiki](https://github.com/lukaszmakuch/frontend-testing-tools/wiki)
+- 🎥 [a talk about frontend-testing-tools](https://m.youtube.com/watch?v=pKnonXe9Los&feature=youtu.be)
 
 ## What's the problem?
 
