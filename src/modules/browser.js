@@ -11,6 +11,7 @@ module.exports = {
           width: (await this.configRead()).browser.default.width,
           height: (await this.configRead()).browser.default.height,
         })
+        .addArguments("--force-color-profile=srgb")
         .addArguments("--user-agent=frontend-testing-tools");
 
       let driver = new webdriver.Builder()
