@@ -14,6 +14,10 @@ module.exports = {
         .addArguments("--force-color-profile=srgb")
         .addArguments("--user-agent=frontend-testing-tools");
 
+        if (!__IS_DEBUGGING__) {
+          options.addArguments("--headless=new")
+        }
+
       let driver = new webdriver.Builder()
         .forBrowser("chrome")
         .setChromeOptions(options)
