@@ -41,7 +41,7 @@ It's really just a glue code among smaller, battle-tested pieces of testing soft
 - Kent C. Dodds' [Testing Library](https://testing-library.com) for natural, accessible selectors
 - American Express' [jest-image-snapshot](https://www.npmjs.com/package/jest-image-snapshot) because that's how you can make assertions regarding what your app actually renders on the screen
 - Facebook's [Jest](https://jestjs.io/) which runs tests in parallel beautifully
-- [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/) because ist's the rock-solid recommendation of W3C
+- [Selenium WebDriver](https://www.selenium.dev/documentation/webdriver/) because it's the rock-solid recommendation of W3C
 - [Endpoint Imposter](https://endpoint-imposter.js.org/) for its ability to mock stateful APIs in a declarative manner
 
 As you can see, it's a pragmatic collection that stands on the shoulders of giants.
