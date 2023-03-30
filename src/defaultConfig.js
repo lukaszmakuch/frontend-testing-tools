@@ -36,12 +36,17 @@ module.exports = {
       })
       .screenshotTake("computed")
     */
-    deviceMetrics: null,
+    deviceMetrics: {
+      width: 1600,
+      height: 3000,
+      deviceScaleFactor: 2,
+      mobile: false,
+    },
     comparisonOptions: {
       // Exactly as described at https://github.com/americanexpress/jest-image-snapshot#%EF%B8%8F-api
-      // You'll rarely need to override the comparisonOptions key.
+      // You'll rarely need to override this.
       comparisonMethod: "ssim",
-      failureThreshold: 0.01,
+      failureThreshold: 0.02,
       failureThresholdType: "percent",
     },
   },

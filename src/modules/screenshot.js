@@ -27,6 +27,7 @@ module.exports = {
     take: async function (id) {
       // Setting the app so that results are repeatable:
       await this.screenshotMakeCaretInvisible();
+      await this.screenshotDisableAnimations();
       await this.screenshotMakeTransitionsInstant();
       await this.screenshotEnterEmulatedDevice();
 
@@ -63,10 +64,9 @@ module.exports = {
         const testFn = async () => {
           const screenshot = await this.driver.takeScreenshot();
           expect(screenshot).toMatchImageSnapshot({
-            failureThreshold: (await this.configRead()).screenshot
-              .failureThreshold,
-            failureThresholdType: (await this.configRead()).screenshot
-              .failureThresholdType,
+            comparisonMethod: (await this.configRead()).screenshot.comparisonOptions.comparisonMethod,
+            failureThreshold: (await this.configRead()).screenshot.comparisonOptions.failureThreshold,
+            failureThresholdType: (await this.configRead()).screenshot.comparisonOptions.failureThresholdType,
 
             // fixed params
             customSnapshotsDir: directory,
@@ -97,6 +97,14 @@ module.exports = {
       await this._styleInjectGlobal(`
         * {
           caret-color: transparent!important;
+        }
+      `);
+    },
+
+    disableAnimations: async function () {
+      await this._styleInjectGlobal(`
+        * {
+          animation-duration: 0s!important;
         }
       `);
     },
