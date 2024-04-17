@@ -35,7 +35,7 @@ test(NAME, () =>
     .screenshotTake("loadingItems")
     // .pauseTest()
     .eiRelease("items")
-    .tlFindByText("form", "add", (e) => {})
+    .tlFindByText("form", "add", (e) => { })
     .eiExpectOk("/pingPong")
     .screenshotTake("myFirstScreen")
     // .pauseTest()

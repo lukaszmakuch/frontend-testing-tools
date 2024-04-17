@@ -3,7 +3,6 @@ const path = require("path");
 
 test("fakeTimeout", async () => {
   eval(await readFile(path.join(__dirname, "fakeTimeout.js"), "utf-8"));
-  console.log(makeFakeTimeout);
 
   const DateToUse = {};
   const mockNow = (timestamp) => {

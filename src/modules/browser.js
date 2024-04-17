@@ -12,11 +12,15 @@ module.exports = {
           height: (await this.configRead()).browser.default.height,
         })
         .addArguments("--force-color-profile=srgb")
-        .addArguments("--user-agent=frontend-testing-tools");
+        .addArguments("--user-agent=frontend-testing-tools")
+        .addArguments('--cc-scroll-animation-duration-in-seconds=0')
+        .addArguments('--disable-overscroll-edge-effect')
+        .addArguments('--disable-smooth-scrolling')
+        .addArguments('--hide-scrollbars');;
 
-        if (!__IS_DEBUGGING__) {
-          options.addArguments("--headless=new")
-        }
+      if (!__IS_DEBUGGING__) {
+        options.addArguments("--headless=new")
+      }
 
       let driver = new webdriver.Builder()
         .forBrowser("chrome")

@@ -45,15 +45,15 @@ class CustomEnvironment extends NodeEnvironment {
     await super.teardown();
   }
 
-  // getVmContext() {
-  //   return super.getVmContext();
-  // }
+  getVmContext() {
+    return super.getVmContext();
+  }
 
-  // async handleTestEvent(event, state) {
-  //   if (event.name === 'test_start') {
-  //     // ...
-  //   }
-  // }
+  async handleTestEvent(event, state) {
+    if (event.name === 'test_start') {
+      // ...
+    }
+  }
 }
 
 module.exports = CustomEnvironment;
